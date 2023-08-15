@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,500&family=Noto+Sans:wght@500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    font-size: 65%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50vh 0;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    
+}
+
+.cart-overview {
+    width: 550px;
+    background-color: #374140;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    min-height: 376px;
+}
+
+header {
+    color: #C3C3C3;
+    font-weight: 700;
+    display: flex;
+    gap: 45px;
+    justify-content: center;
+
+}
+
+.years {
+    margin: 80px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 55px;
+}
+
+.current_year {
+    font-size: 24px;
+    font-weight: 600;
+    color: #D2D9D9;
+}
+
+.prev_year,
+.next_year {
+    margin: 4px 0 0;
+    color: #818A89;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.weeks {
+    margin: 25px 0 0;
+    display: flex;
+    gap: 32px;
+    font-size: 16px;
+    color: #9F9E92;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.monthes {
+    display: flex;
+    justify-content: space-between;
+}
+
+.days {
+    margin: 30px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    text-align: center;
+    font-size: 22px;
+}
+
+.days li {
+    width: calc(100% / 7);
+    /* font-size: 1.07rem; */
+    color: #ffffff;
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.days li::before {
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    height: 40px;
+    width: 40px;
+    z-index: -1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.days li.active::before {
+    background-color: #C1DE39;
+}
+
+.days li:not(.active):hover::before {
+    background: #333;
+}
+
+.days li.marked::before {
+    background-color: #FDC281;
+}
+
+.days li .calendar .weeks li {
+    font-weight: 700;
+    cursor: default;
+}
+
+.calendar .days li {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    margin-top: 20px;
+}
+
+.activeMonth {
+    color: #ffffff;
+}
+
+.activeYear {
+    color: #C2C2C2;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.days li.outher_month {
+    color: #aaa;
+    pointer-events: none;
+}
+
+.days li.active {
+    color: #374140;
+}
+
+
+
+.monthes-list {
+    width: 380px;
+    padding: 0;
+    margin-left: 55px;
+    text-align: center;
+    display: flex;
+    overflow: hidden;
+    gap: 5px;
+    scroll-behavior: smooth;
+}
+
+.monthes-list button {
+    background: transparent;
+    border: none;
+    min-width: 70px;
+    color: #D2D9D9;
+    font-size: 28px;
+    font-weight: 200;
+    cursor: pointer;
+}
+
+.monthes-list button.selectedMonth {
+    font-weight: 700;
+}
+
+.monthes {
+    position: relative;
+    margin: 25px 0 70px;
+}
+
+.monthes .prev,
+.monthes .next {
+    width: 80px;
+    aspect-ratio: 1 / 1;
+    position: absolute;
+    top: 4px;
+}
+
+.monthes .next {
+    right: -70px;
+}
+
+.material-symbols-outlined .inactive {
+    opacity: .5;
+    pointer-events: none;
+}
+
+.monthes span {
+    cursor: pointer;
+}
+
+/*CART detail */
+.cart-detail {
+    background-color: #ED8071;
+    z-index: 1;
+}
+
+.hed-text {
+    color: #000;
+    padding: 4rem;
+    background: #FCBF7E;
+    color: #000;
+    font-size: 20px;
+}
+
+.event-list {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 475px;
+    min-width: 475px;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: inherit;
+    border-bottom: 2px solid;
+    padding: 2rem 0;
+}
+
+.event-item .text h1 {
+    color: #FFEBBC;
+}
+
+img {
+    width: 45px;
+}
+
+.icon-control {
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.icon-control span {
+    margin: 0 10px;
+}
+
+.text p {
+    font-size: 14px;
+}
+
+.event-btn {
+    background: #364240;
+    color: #D2D9D9;
+    margin: 30px auto;
+    padding: 20px 30px;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
