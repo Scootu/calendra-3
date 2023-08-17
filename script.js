@@ -56,7 +56,16 @@ let events = [
     eventIcon: "https://i.ibb.co/dGnHnbH/presentation-icon.png",
   },
 ];
-
+const iconEvent = [
+  { src: "https://i.ibb.co/dGnHnbH/presentation-icon.png" },
+  { src: "https://i.ibb.co/Jv8PNcg/cutlery-icon.png" },
+  { src: "https://i.ibb.co/NpSxzCq/star-icon.png" },
+  { src: "https://i.ibb.co/7gD6YvQ/cart-icon.png" },
+  { src: "https://i.ibb.co/k94gb9x/heart-icon.png" },
+  { src: "https://i.ibb.co/6RmH6yZ/baguette-icon.png" },
+  { src: "https://i.ibb.co/122XwvY/bell-icon.png" },
+  { src: "https://i.ibb.co/RHRzyn6/sport-icon.png" },
+];
 // i can put this in server
 
 const yearContainer = document.querySelector(".years");
@@ -69,6 +78,7 @@ const allMonthesButton = document.querySelectorAll(".monthes-list button");
 const daysList = document.querySelector(".days");
 const weekList = document.querySelector(".weeks");
 let cartDetailList = document.querySelector(".event-list");
+const formAddNewEvent = document.querySelector(".event-new-content form");
 
 /// btns
 
@@ -144,12 +154,41 @@ function deleteElementsClass(elemCon, elemClass) {
   });
 }
 
+function selectPlannedEventDays() {
+  let eventTimes = events.map((event) => {
+    let eventDate = new Date(event.eventDate);
+    let eventMonth = eventDate.getMonth();
+    let eventYear = eventDate.getFullYear();
+    let eventDateDay = eventDate.getDate();
+
+    return { date: eventDateDay, month: eventMonth, year: eventYear };
+  });
+  // i wounte want this aprouch for solving this  pattren for select planned
+  document
+    .querySelectorAll(".days li:not(outher_month)")
+    .forEach((itemElem) => {
+      eventTimes.forEach((item) => {
+        let dayItem = +itemElem.textContent;
+        let monthItem = currMonth;
+        let yearItem = currYear;
+        if (
+          item.date === dayItem &&
+          item.month === monthItem &&
+          item.year === yearItem
+        ) {
+          itemElem.classList.add("planned");
+        }
+      });
+    });
+}
+
 const renderDays = () => {
   let firstDayOfMonth = new Date(currYear, currMonth, 1).getDay();
   let lastDateOfMonth = new Date(currYear, currMonth + 1, 0).getDate();
   let lastDayOfMonth = new Date(currYear, currMonth, lastDateOfMonth).getDay();
   let lastDateOfLastMonth = new Date(currYear, currMonth, 0).getDate();
   daysList.textContent = "";
+
   for (let i = firstDayOfMonth; i > 0; i--) {
     // creating li of previous month last days
     let liTagElement = document.createElement("li");
@@ -164,6 +203,11 @@ const renderDays = () => {
     let liTagElement = document.createElement("li");
     liTagElement.setAttribute("data-num-indicator", i);
     liTagElement.textContent = i;
+
+    liTagElement.addEventListener(
+      "click",
+      selecteDayMon.bind(null, liTagElement)
+    );
     daysList.appendChild(liTagElement);
   }
   for (let i = lastDayOfMonth; i < 6; i++) {
@@ -174,7 +218,18 @@ const renderDays = () => {
     liTagElement.textContent = `${i - lastDayOfMonth + 1}`;
     daysList.appendChild(liTagElement);
   }
+  // select planned day
+  selectPlannedEventDays();
 };
+function selecteDayMon(liTag) {
+  const daysList = document.querySelectorAll(".days li");
+  deleteElementsClass(daysList, "selectedItem");
+  if (!liTag.classList.contains("planned")) {
+    liTag.classList.toggle("selectedItem");
+  }
+  const liSelectedDate = liTag.textContent;
+  selectedDay = liSelectedDate;
+}
 //events
 function eventComponent(event, index) {
   let eventDate = new Date(event.eventDate);
@@ -182,6 +237,7 @@ function eventComponent(event, index) {
   let currDateEvent = eventDate.getDate();
   let currHoureEvent = eventDate.getHours();
   let eventDateText = `${week[currDayEvent]} ${currDateEvent} ${currHoureEvent}`;
+
   return eventDate.getFullYear() === currYear &&
     eventDate.getMonth() === currMonth
     ? ` <li class="event-item" data-event-id=${event.id}>
@@ -201,6 +257,7 @@ function eventComponent(event, index) {
                 </li>`
     : "";
 }
+
 function addEventListainerToControlIcon() {
   const iconCartDetailControl = document.querySelectorAll(".icon-control");
   iconCartDetailControl.forEach((elem) => {
@@ -212,6 +269,7 @@ function addEventListainerToControlIcon() {
     elem.lastElementChild.addEventListener("click", deleteEvent.bind(null, id));
   });
 }
+
 function editEvent(elem, id) {
   //we can access to the element by id but in this challenge work with index is mush essy !
   // another editFunction // or i can continu in this
@@ -222,6 +280,7 @@ function deleteEvent(id) {
   });
   events = eventArr;
   renderEvents();
+  renderDays();
 }
 function renderEvents() {
   let eventList = "";
@@ -231,13 +290,70 @@ function renderEvents() {
   cartDetailList.innerHTML = eventList;
   addEventListainerToControlIcon();
 }
-// all events
+function addEventListainerToFormNewEvent() {
+  formAddNewEvent.addEventListener("submit", (e) => {
+    const data = new FormData(formAddNewEvent);
+    let formDataObj = [{key:'id',value:crypto.randomUUID()}];
 
+    for (const [key, value] of data.entries()) {
+      // formDataObj = {...formDataObj ,key : value  };
+      formDataObj.push({ key, value });
+    }
+    console.log(formDataObj);
+    // if(selectedDay !== undefined) { 
+    //   formDataObj.push({
+    //     key:'eventTime' ,value:new Date(selectedYear,selectedMonth,selectedDay,)
+    //   })
+    //   const resultFormObj = formDataObj.reduce((obj, item) => {
+    //   obj[item.key] = item.value;
+    //   return obj;
+    // }, {});
+    // }
+    // addNewEvent();
+    e.preventDefault();
+  });
+}
+
+// form add new event
+function addNewEvent() {
+  if (selectedDay !== undefined) {
+  } else {
+    alert("select a day first");
+  }
+}
+//render Event new item icons :
+
+function renderIconsNewEvent() {
+  let selectEventContainer = document.querySelector(".selectIconList");
+
+  iconEvent.forEach((item, i) => {
+    const liTagElement = document.createElement("li");
+    const inputTagElement = document.createElement("input");
+    inputTagElement.setAttribute("name", "eventIcon");
+    inputTagElement.setAttribute("type", "radio");
+    inputTagElement.setAttribute("value",item.src);
+    inputTagElement.setAttribute("id", `icon-${i}`);
+    inputTagElement.setAttribute("class", "inputEventNew");
+    const liLabel = document.createElement("label");
+    liLabel.setAttribute("for", `icon-${i}`);
+    const imgIcon = document.createElement("img");
+    liTagElement.classList.add("iconEventSelectNew");
+    imgIcon.setAttribute("src", item.src);
+
+    liLabel.appendChild(imgIcon);
+    liTagElement.appendChild(inputTagElement);
+    liTagElement.appendChild(liLabel);
+
+    selectEventContainer.appendChild(liTagElement);
+  });
+}
+// all events
+renderIconsNewEvent();
 renderYears();
 renderDays();
 renderEvents();
 addEventListainerToYears();
 addEventListaineToMonthes();
-
+addEventListainerToFormNewEvent();
 // leftBtn.addEventListener("click", updateChangeLeft);
 // rightBtn.addEventListener("click", updateChangeRight);

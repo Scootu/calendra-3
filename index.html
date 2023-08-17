@@ -60,7 +60,7 @@
         </header>
         <div class="event-container">
             <ul class="event-list">
-               
+
             </ul>
             <button class="event-btn">
                 <span class="material-symbols-outlined">
@@ -70,19 +70,29 @@
             </button>
         </div>
         <div class="add-new-event-container hidden">
-            <form action="#">
-                <div class="addTextEvent">
-                    <label>Add Title</label>
-                    <input id="add-text-event" type="text" />
-                </div>
-                <div class="addTimeEvent">
-                    <label>Add Time</label>
-                    <input id="add-time-event" type="time" />
-                </div>
-                <div class="selectIconEvent">
+            <header class="new-event-hed">
+                <h1>add new event</h1>
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </header>
+            <div class="event-new-content">
+                <form action="#">
+                    <div class="form-control">
+                        <label for="add-text-event">Event Title</label>
+                        <input id="add-text-event" type="text" name="eventTitle"/>
+                    </div>
 
-                    <!-- how to select and icon-->
-                </div>
+                    <div class="form-control">
+                        <label for="add-time-event">Event Time</label>
+                        <input id="add-time-event" type="time" name="eventHoure"/>
+                    </div>
+                    <div class="form-control">
+                        <p>select event icon</p>
+                        <ul class="selectIconList"></ul>
+                    </div>
+                    <button class="event-btn">CREATE EVENT</button>
+            </div>
             </form>
         </div>
     </div>
