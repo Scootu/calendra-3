@@ -73,17 +73,37 @@ const allYearsContainerBtn = document.querySelectorAll(".years div");
 const currentYearElement = document.querySelector(".current_year");
 const nextYearElement = document.querySelector(".next_year");
 const prevYearElement = document.querySelector(".prev_year");
+//monthes
+const monthContainer = document.querySelector(".monthes");
 const monthesList = document.querySelector(".monthes-list");
 const allMonthesButton = document.querySelectorAll(".monthes-list button");
+//days
 const daysList = document.querySelector(".days");
 const weekList = document.querySelector(".weeks");
 let cartDetailList = document.querySelector(".event-list");
+//addNewEvent Container
 const formAddNewEvent = document.querySelector(".event-new-content form");
-
+const addNewEventContainer = document.getElementById("addNewEventContainer");
+const closeNewEventContainerBtn = document.querySelector(
+  ".add-new-event-container .new-event-hed span"
+);
+//editEvent Container
+const editEventContainer = document.getElementById("editEventContainer");
+const closeEditContainerBtn = document.querySelector(
+  ".container-event-edit .new-event-hed span"
+);
+const editEventForm = document.querySelector(".event-edit-content form");
+//icon container
+const selectEventContainer = document.querySelector(".selectIconList");
+const selectIconListEdit = document.getElementById("selectIconListEdit");
 /// btns
-
+const addNewEventbtn = document.querySelector(".event-btn");
 const MonthesNavigationBtn = document.querySelectorAll(".monthes span");
-////
+////Month
+const MONTH_CONTAINER_WIDTH = monthesList.clientWidth;
+const MONTH_CONTAINER_WIDTH_TOTAL = monthesList.scrollWidth;
+const MONTH_BUTTON_WIDTH = 75;
+let scrollIndex = 0;
 const monthes = [
   "jan",
   "feb",
@@ -99,17 +119,18 @@ const monthes = [
   "dec",
 ];
 const week = ["Fri", "Sat", "Sun", "Mon", "Thu", "Wed", "Thur"];
-// selected days
-let selectedDay = undefined;
-let selectedMonth = undefined;
-let selectedYear = undefined;
-//
+
 const date = new Date();
 let currDate = date.getDate();
 let currDay = date.getDay(); // the day in the week
 let currMonth = date.getMonth();
 let currMonthName = monthes[date.getMonth()].toUpperCase(); // because latter we will change the currMonth value
 let currYear = date.getFullYear();
+// selected days
+let selectedDay = undefined;
+let selectedMonth = currMonth;
+let selectedYear = currYear;
+//
 
 function renderYears() {
   currentYearElement.textContent =
@@ -133,6 +154,8 @@ function selecteYearFun(item) {
   if (+item.textContent) {
     item.classList.add("selectedYear");
     currYear = parseInt(item.textContent);
+    selectedYear = currYear;
+    selectedDay = undefined;
     renderYears();
     renderDays();
     renderEvents();
@@ -143,6 +166,8 @@ function selecteMonthFun(item) {
   item.classList.add("selectedMonth");
   let itemIndexMonth = item.getAttribute("data-num-mon");
   currMonth = itemIndexMonth;
+  selectedMonth = currMonth;
+  selectedDay = undefined;
   renderYears();
   renderDays();
   renderEvents();
@@ -226,9 +251,8 @@ function selecteDayMon(liTag) {
   deleteElementsClass(daysList, "selectedItem");
   if (!liTag.classList.contains("planned")) {
     liTag.classList.toggle("selectedItem");
+    selectedDay = +liTag.textContent;
   }
-  const liSelectedDate = liTag.textContent;
-  selectedDay = liSelectedDate;
 }
 //events
 function eventComponent(event, index) {
@@ -236,15 +260,15 @@ function eventComponent(event, index) {
   let currDayEvent = eventDate.getDay();
   let currDateEvent = eventDate.getDate();
   let currHoureEvent = eventDate.getHours();
-  let eventDateText = `${week[currDayEvent]} ${currDateEvent} ${currHoureEvent}`;
-
+  let currMinuteEvent = String(eventDate.getMinutes()).padStart(2, "0");
+  let eventDateText = `${week[currDayEvent]} ${currDateEvent} ${currHoureEvent}:${currMinuteEvent}`;
   return eventDate.getFullYear() === currYear &&
     eventDate.getMonth() === currMonth
     ? ` <li class="event-item" data-event-id=${event.id}>
                     <img class="event_icon" src=${event.eventIcon}>
                     <div class="text">
                         <h1>${event.eventTitle}</h1>
-                        <p>${eventDateText}</p>
+                        <p data-select-day=${currDateEvent}>${eventDateText}</p>
                     </div>
                     <div class="icon-control">
                         <span class="material-symbols-outlined">
@@ -262,6 +286,7 @@ function addEventListainerToControlIcon() {
   const iconCartDetailControl = document.querySelectorAll(".icon-control");
   iconCartDetailControl.forEach((elem) => {
     let id = elem.parentElement.getAttribute("data-event-id");
+
     elem.firstElementChild.addEventListener(
       "click",
       editEvent.bind(null, elem, id)
@@ -270,10 +295,6 @@ function addEventListainerToControlIcon() {
   });
 }
 
-function editEvent(elem, id) {
-  //we can access to the element by id but in this challenge work with index is mush essy !
-  // another editFunction // or i can continu in this
-}
 function deleteEvent(id) {
   let eventArr = events.filter((item, index) => {
     return item.id !== id;
@@ -290,48 +311,119 @@ function renderEvents() {
   cartDetailList.innerHTML = eventList;
   addEventListainerToControlIcon();
 }
-function addEventListainerToFormNewEvent() {
-  formAddNewEvent.addEventListener("submit", (e) => {
-    const data = new FormData(formAddNewEvent);
-    let formDataObj = [{key:'id',value:crypto.randomUUID()}];
-
-    for (const [key, value] of data.entries()) {
-      // formDataObj = {...formDataObj ,key : value  };
-      formDataObj.push({ key, value });
-    }
-    console.log(formDataObj);
-    // if(selectedDay !== undefined) { 
-    //   formDataObj.push({
-    //     key:'eventTime' ,value:new Date(selectedYear,selectedMonth,selectedDay,)
-    //   })
-    //   const resultFormObj = formDataObj.reduce((obj, item) => {
-    //   obj[item.key] = item.value;
-    //   return obj;
-    // }, {});
-    // }
-    // addNewEvent();
+function editEvent(elem, id) {
+  const eventTitleInput = editEventForm.querySelector("input");
+  editEventContainer.classList.remove("hidden");
+  const eventTitle = elem.previousElementSibling;
+  eventTitleInput.value = eventTitle.firstElementChild.textContent;
+  const eventDay = +eventTitle.lastElementChild.getAttribute("data-select-day");
+  console.log(eventDay);
+  editEventForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    getDataFromForm(editEventForm, eventDay, id);
   });
 }
 
-// form add new event
-function addNewEvent() {
-  if (selectedDay !== undefined) {
-  } else {
-    alert("select a day first");
+function getDataFromForm(formDataContainer, eventDay, id) {
+  const data = new FormData(formDataContainer);
+  const formDataObj = [];
+  for (const [key, value] of data.entries()) {
+    // formDataObj = {...formDataObj ,key : value  };
+    if (value === "") {
+      alert("form inputs not valid");
+      return;
+    }
+    formDataObj.push({ key, value });
   }
+
+  let resultFormObj = formDataObj.reduce((obj, item) => {
+    obj[item.key] = item.value;
+    return obj;
+  }, {});
+  const eventClock = resultFormObj.eventHoure.split(":");
+  const eventDateNotFormated = new Date(
+    selectedYear,
+    selectedMonth,
+    selectedDay ? selectedDay : eventDay,
+    eventClock[0],
+    eventClock[1],
+    0,
+    0
+  );
+  const eventDateFormated = formatDateToISOString(eventDateNotFormated);
+  delete resultFormObj.eventHoure;
+  // the diffrence
+  formDataContainer.parentElement.parentElement.classList.add("hidden");
+
+  if (!id) {
+    resultFormObj = {
+      ...resultFormObj,
+      eventDate: eventDateFormated,
+      id: crypto.randomUUID(),
+    };
+    addValidateEventToEventDataBase(resultFormObj);
+  } else {
+    console.log(eventDateFormated);
+    resultFormObj = { ...resultFormObj, eventDate: eventDateFormated, id };
+    editExistingEvent(resultFormObj, id);
+  }
+}
+function addEventListainerToFormNewEvent(formDataContainer) {
+  formDataContainer.addEventListener("submit", (e) => {
+    e.preventDefault();
+    getDataFromForm(formDataContainer, undefined, undefined);
+  });
+}
+
+function formatDateToISOString(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
+// form add new event
+function addListainerToAddNewEventBtn() {
+  addNewEventbtn.addEventListener("click", () => {
+    if (selectedDay && selectedMonth && selectedYear !== undefined) {
+      addNewEventContainer.classList.remove("hidden");
+    } else {
+      alert("select a day first !");
+    }
+  });
+}
+function addListainerCloseNewEventContainer(closebtn, container) {
+  closebtn.addEventListener("click", () => {
+    container.classList.add("hidden");
+  });
+}
+function editExistingEvent(eventObj, id) {
+  const eventIndex = events.findIndex((event) => {
+    return event.id === id;
+  });
+  console.log(eventIndex, eventObj);
+  events[eventIndex] = eventObj;
+  renderEvents();
+  renderDays();
+}
+function addValidateEventToEventDataBase(event) {
+  // try to put this with edit
+  events.push(event);
+  renderEvents();
+  selectPlannedEventDays();
 }
 //render Event new item icons :
 
-function renderIconsNewEvent() {
-  let selectEventContainer = document.querySelector(".selectIconList");
-
+function renderIconsNewEvent(selectEventContainer) {
   iconEvent.forEach((item, i) => {
     const liTagElement = document.createElement("li");
     const inputTagElement = document.createElement("input");
     inputTagElement.setAttribute("name", "eventIcon");
     inputTagElement.setAttribute("type", "radio");
-    inputTagElement.setAttribute("value",item.src);
+    inputTagElement.setAttribute("value", item.src);
     inputTagElement.setAttribute("id", `icon-${i}`);
     inputTagElement.setAttribute("class", "inputEventNew");
     const liLabel = document.createElement("label");
@@ -343,17 +435,53 @@ function renderIconsNewEvent() {
     liLabel.appendChild(imgIcon);
     liTagElement.appendChild(inputTagElement);
     liTagElement.appendChild(liLabel);
-
     selectEventContainer.appendChild(liTagElement);
   });
 }
+const handleMonthNavigation = (button) => {
+  if (button.classList.contains("prev")) {
+    scrollIndex -= MONTH_BUTTON_WIDTH;
+    monthesList.scroll(scrollIndex, 0);
+    console.log(scrollIndex);
+  }
+
+  if (button.classList.contains("next")) {
+    scrollIndex += MONTH_BUTTON_WIDTH;
+    monthesList.scroll(scrollIndex, 0);
+  }
+
+  if (scrollIndex >= 895 - 5 * MONTH_BUTTON_WIDTH) {
+    MonthesNavigationBtn[1].classList.add("inactive");
+  } else {
+    MonthesNavigationBtn[1].classList.remove("inactive");
+  }
+
+  if (scrollIndex === 0) {
+    MonthesNavigationBtn[0].classList.add("inactive");
+  } else {
+    MonthesNavigationBtn[0].classList.remove("inactive");
+  }
+};
 // all events
-renderIconsNewEvent();
+renderIconsNewEvent(selectEventContainer);
+renderIconsNewEvent(selectIconListEdit);
 renderYears();
 renderDays();
 renderEvents();
+MonthesNavigationBtn.forEach((monthNavigation) => {
+  monthNavigation.addEventListener("click", () => {
+    handleMonthNavigation(monthNavigation);
+  });
+});
 addEventListainerToYears();
 addEventListaineToMonthes();
-addEventListainerToFormNewEvent();
+addEventListainerToFormNewEvent(formAddNewEvent);
+// addEventListainerToFormNewEvent(editEventForm);
+addListainerToAddNewEventBtn();
+addListainerCloseNewEventContainer(
+  closeNewEventContainerBtn,
+  addNewEventContainer
+);
+addListainerCloseNewEventContainer(closeEditContainerBtn, editEventContainer);
 // leftBtn.addEventListener("click", updateChangeLeft);
 // rightBtn.addEventListener("click", updateChangeRight);

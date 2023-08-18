@@ -31,7 +31,7 @@
             <ul class="days"></ul>
         </div>
         <div class="monthes">
-            <span class="material-symbols-outlined prev">
+            <span class="material-symbols-outlined prev inactive">
                 arrow_back_ios
             </span>
 
@@ -69,7 +69,7 @@
                 <span>ADD EVENT</span>
             </button>
         </div>
-        <div class="add-new-event-container hidden">
+        <div id="addNewEventContainer" class="add-new-event-container hidden">
             <header class="new-event-hed">
                 <h1>add new event</h1>
                 <span class="material-symbols-outlined">
@@ -80,12 +80,12 @@
                 <form action="#">
                     <div class="form-control">
                         <label for="add-text-event">Event Title</label>
-                        <input id="add-text-event" type="text" name="eventTitle"/>
+                        <input id="add-text-event" type="text" name="eventTitle" />
                     </div>
 
                     <div class="form-control">
                         <label for="add-time-event">Event Time</label>
-                        <input id="add-time-event" type="time" name="eventHoure"/>
+                        <input id="add-time-event" type="time" name="eventHoure" />
                     </div>
                     <div class="form-control">
                         <p>select event icon</p>
@@ -94,6 +94,31 @@
                     <button class="event-btn">CREATE EVENT</button>
             </div>
             </form>
+        </div>
+        <div id="editEventContainer" class="container-event-edit hidden">
+            <header class="new-event-hed">
+                <h1>edit event</h1>
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </header>
+            <div class="event-edit-content">
+                <form action="#">
+                    <div class="form-control">
+                        <label for="add-text-event">Event Title</label>
+                        <input id="add-text-event" type="text" name="eventTitle" />
+                    </div>
+                    <div class="form-control">
+                        <label for="add-time-event">Event Time</label>
+                        <input id="add-time-event" type="time" name="eventHoure" />
+                    </div>
+                    <div class="form-control">
+                        <p>select event icon</p>
+                        <ul id="selectIconListEdit" class="selectIconList"></ul>
+                    </div>
+                    <button class="event-btn">SAVE</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>

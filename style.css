@@ -182,7 +182,6 @@ header {
 .monthes-list {
     width: 380px;
     padding: 0;
-    margin-left: 55px;
     text-align: center;
     display: flex;
     overflow: hidden;
@@ -206,22 +205,27 @@ header {
 
 .monthes {
     position: relative;
-    margin: 25px 0 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
 }
 
 .monthes .prev,
 .monthes .next {
-    width: 80px;
     aspect-ratio: 1 / 1;
     position: absolute;
-    top: 4px;
+}
+
+.monthes .prev {
+    left: 50px;
 }
 
 .monthes .next {
-    right: -70px;
+    right: 50px
 }
 
-.material-symbols-outlined .inactive {
+.monthes .span.inactive {
     opacity: .5;
     pointer-events: none;
 }
@@ -277,6 +281,10 @@ img {
     margin: 0 10px;
 }
 
+.text h1 {
+    text-transform: uppercase;
+}
+
 .text p {
     font-size: 14px;
 }
@@ -297,14 +305,22 @@ img {
 }
 
 /* add-new-event-container */
-.add-new-event-container {
+.add-new-event-container.hidden,
+.container-event-edit.hidden {
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.add-new-event-container,
+.container-event-edit {
     position: absolute;
     transform: translate(-50%, -100%);
     width: 400px;
     background-color: #ED8071;
 }
 
-.add-new-event-container .new-event-hed {
+.new-event-hed {
     text-transform: uppercase;
     background-color: #FCBF7E;
     padding: 2rem 3rem;
@@ -312,12 +328,17 @@ img {
     justify-content: space-between;
 }
 
-.add-new-event-container .new-event-hed h1 {
+.new-event-hed h1 {
     font-size: 22px;
     color: #000;
 }
 
-.event-new-content {
+.new-event-hed span {
+    cursor: pointer;
+}
+
+.event-new-content,
+.event-edit-content {
     padding: 2rem 3rem;
 }
 
@@ -352,7 +373,8 @@ img {
 }
 
 /* select item Container */
-.selectIconList {
+.selectIconList,
+.selectIconListEdit {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
