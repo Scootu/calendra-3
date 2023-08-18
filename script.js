@@ -164,7 +164,7 @@ function selecteYearFun(item) {
 function selecteMonthFun(item) {
   deleteElementsClass(allMonthesButton, "selectedMonth");
   item.classList.add("selectedMonth");
-  let itemIndexMonth = item.getAttribute("data-num-mon");
+  let itemIndexMonth = +item.getAttribute("data-num-mon");
   currMonth = itemIndexMonth;
   selectedMonth = currMonth;
   selectedDay = undefined;
@@ -255,7 +255,7 @@ function selecteDayMon(liTag) {
   }
 }
 //events
-function eventComponent(event, index) {
+function eventComponent(event) {
   let eventDate = new Date(event.eventDate);
   let currDayEvent = eventDate.getDay();
   let currDateEvent = eventDate.getDate();
